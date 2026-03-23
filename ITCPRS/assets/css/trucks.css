@@ -1,0 +1,719 @@
+/* =============================================================
+   assets/css/trucks.css  —  extends admin.css
+   ============================================================= */
+
+/* ── Stat card sizing override (tighter than dashboard) ───────── */
+.stats-grid { margin-bottom: 20px; }
+.stats-grid .stat-card  { padding: 16px 18px 14px; }
+.stats-grid .stat-value { font-size: 32px; }
+.stats-grid .stat-icon  { width: 36px; height: 36px; border-radius: 8px; }
+.stats-grid .stat-icon svg { width: 17px; height: 17px; }
+.stats-grid .stat-trend { font-size: 10px; padding: 2px 7px; }
+.stats-grid .stat-label { font-size: 11px; margin-top: 3px; }
+
+/* ── Card + table depth ───────────────────────────────────────── */
+.stats-grid .stat-card,
+.card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  border-color: var(--light-grey-300);
+}
+.stats-grid .stat-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.05);
+}
+.card {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+}
+.data-table thead th {
+  background: #f1f3f5;
+  color: var(--dark-grey);
+  border-bottom: 2px solid var(--light-grey-300);
+}
+.data-table tbody tr:nth-child(even) { background: #fafafa; }
+.data-table tbody tr:hover { background: #f0f2f5; }
+
+/* ── Toolbar ──────────────────────────────────────────────────── */
+.trucks-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.search-box { position: relative; }
+.search-box svg {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; stroke: var(--text-light); pointer-events: none;
+}
+.search-box input {
+  padding: 8px 12px 8px 32px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: 'Barlow', sans-serif; font-size: 13px;
+  color: var(--text); background: var(--bg); outline: none; width: 220px;
+  transition: border-color var(--fast), box-shadow var(--fast);
+}
+.search-box input:focus {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px rgba(211,47,47,0.08);
+  background: var(--white);
+}
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: 'Barlow', sans-serif; font-size: 13px;
+  color: var(--text); background: var(--bg); cursor: pointer; outline: none;
+}
+.filter-select:focus { border-color: var(--brand-red); }
+
+/* ── Table columns ────────────────────────────────────────────── */
+.truck-make { font-weight: 600; color: var(--text); display: block; font-size: 13px; }
+.truck-year { font-size: 11px; color: var(--text-muted); margin-top: 1px; display: block; }
+
+/* Peek icon inline hint */
+.peek-icon {
+  display: inline-block; vertical-align: middle;
+  margin-left: 4px; opacity: 0.4;
+  transition: opacity 0.15s;
+}
+.peek-trigger:hover .peek-icon { opacity: 0.9; }
+
+/* ── Peek trigger cursor ──────────────────────────────────────── */
+.peek-trigger { cursor: default; }
+.peek-trigger[data-peek-img] { cursor: pointer; }
+
+/* ── Crew cell ────────────────────────────────────────────────── */
+.crew-cell {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text); cursor: pointer;
+}
+.crew-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; letter-spacing: 0;
+}
+/* Photo avatar — shown when driver has an uploaded profile photo */
+.crew-avatar-img {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--light-grey-300);
+}
+.crew-driver { background: var(--brand-red);    color: #fff; }
+.crew-helper { background: var(--brand-yellow);  color: var(--dark-grey); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PEEK POPUP
+   ════════════════════════════════════════════════════════════ */
+.truck-peek {
+  position: fixed;
+  z-index: 7000;
+  width: 220px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid var(--light-grey-300);
+  overflow: hidden;
+  pointer-events: none;         /* doesn't block clicks by default */
+  opacity: 0;
+  transform: scale(0.92) translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
+}
+.truck-peek.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.truck-peek-img-wrap {
+  width: 100%;
+  height: 140px;
+  background: var(--light-grey-100);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.truck-peek-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+}
+
+.truck-peek-no-img {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; padding: 16px;
+  color: var(--text-light); font-size: 12px;
+  font-family: 'Barlow', sans-serif; text-align: center;
+  width: 100%;
+}
+.truck-peek-no-img svg { stroke: var(--light-grey-400); }
+
+/* Crew avatar inside no-img area */
+.peek-crew-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; letter-spacing: 0.02em;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; margin-bottom: 4px;
+}
+.peek-crew-driver { background: var(--brand-red); }
+.peek-crew-helper { background: var(--brand-yellow); color: var(--dark-grey); }
+
+.truck-peek-no-img span {
+  font-weight: 600; color: var(--text); font-size: 13px;
+}
+.truck-peek-no-img small { color: var(--text-muted); font-size: 11px; }
+
+.truck-peek-info {
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--border-soft);
+}
+.truck-peek-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--text); text-transform: uppercase;
+}
+.truck-peek-sub {
+  font-size: 11px; color: var(--text-muted); margin-top: 2px;
+}
+
+/* ── Row actions ──────────────────────────────────────────────── */
+.row-actions { display: flex; align-items: center; gap: 6px; }
+.btn-sm { padding: 6px 12px !important; font-size: 12px !important; gap: 5px !important; }
+.btn-sm svg { width: 13px !important; height: 13px !important; }
+.btn-delete-truck { color: var(--text-muted); }
+.btn-delete-truck:hover {
+  background: var(--brand-red-bg) !important;
+  border-color: var(--brand-red) !important;
+  color: var(--brand-red) !important;
+}
+
+/* ── Empty state ──────────────────────────────────────────────── */
+.trucks-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; color: var(--text-light); gap: 12px;
+}
+.trucks-empty svg { width: 48px; height: 48px; stroke: var(--light-grey-400); stroke-width: 1.5; }
+.trucks-empty p { font-size: 13.5px; color: var(--text-muted); margin: 0; }
+.trucks-empty-cell { padding: 0 !important; border: none !important; }
+
+/* ── Pagination ───────────────────────────────────────────────── */
+.trucks-pagination {
+  display: flex !important; align-items: center;
+  justify-content: space-between; flex-wrap: wrap;
+  gap: 10px; padding: 12px 22px !important; text-align: left !important;
+}
+.pagination-info { font-size: 12px; color: var(--text-muted); }
+.pagination-controls { display: flex; gap: 4px; }
+.page-btn {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--white);
+  font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--text-muted); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  transition: all var(--fast) var(--ease);
+}
+.page-btn:hover:not(.active):not(.disabled) { background: var(--light-grey-100); border-color: var(--grey); color: var(--text); }
+.page-btn.active  { background: var(--brand-red); border-color: var(--brand-red); color: #fff; }
+.page-btn.disabled { opacity: 0.35; pointer-events: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL
+   ════════════════════════════════════════════════════════════ */
+.itc-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.52); backdrop-filter: blur(3px);
+  z-index: 8000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.itc-modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.itc-modal {
+  background: #fff; border-radius: 14px; width: 100%; max-width: 580px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+  max-height: 90vh; overflow-y: auto;
+  opacity: 0; transform: scale(0.94) translateY(14px);
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+}
+.itc-modal-overlay.open .itc-modal { transform: scale(1) translateY(0); opacity: 1; }
+
+.itc-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 26px 16px; border-bottom: 1px solid var(--border-soft);
+}
+.itc-modal-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--text); text-transform: uppercase;
+}
+.itc-modal-close {
+  width: 30px; height: 30px; border: none;
+  background: var(--light-grey-100); border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  transition: background var(--fast), color var(--fast);
+}
+.itc-modal-close:hover { background: var(--brand-red-bg); color: var(--brand-red); }
+.itc-modal-close svg { width: 15px; height: 15px; }
+
+.itc-modal-body { padding: 20px 26px; }
+.itc-modal-footer {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 10px; padding: 16px 26px 20px; border-top: 1px solid var(--border-soft);
+}
+
+/* ── Form ─────────────────────────────────────────────────────── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full, .full { grid-column: 1 / -1; }
+
+.form-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--text-muted);
+  display: flex; align-items: center; gap: 3px;
+}
+.form-label .req { color: var(--brand-red); }
+
+.form-control {
+  padding: 9px 12px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Barlow', sans-serif; font-size: 13.5px;
+  color: var(--text); background: var(--white); outline: none;
+  transition: border-color var(--fast), box-shadow var(--fast);
+}
+.form-control:focus {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px rgba(211,47,47,0.08);
+}
+.form-control.is-error { border-color: var(--brand-red); }
+textarea.form-control { resize: vertical; min-height: 72px; }
+.form-hint { font-size: 11px; color: var(--text-light); font-family: 'Barlow', sans-serif; }
+
+/* ── Section divider ──────────────────────────────────────────── */
+.form-divider {
+  display: flex; align-items: center; gap: 10px; margin: 4px 0 2px;
+}
+.form-divider span {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--grey); white-space: nowrap;
+  background: var(--light-grey-100); padding: 3px 10px;
+  border-radius: 20px; border: 1px solid var(--border);
+}
+.form-divider::before, .form-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border-soft);
+}
+
+/* ── File upload widget ───────────────────────────────────────── */
+.file-upload-input {
+  position: absolute; width: 1px; height: 1px;
+  opacity: 0; overflow: hidden; clip: rect(0,0,0,0);
+}
+
+.file-upload-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  border: 1.5px dashed var(--light-grey-400);
+  border-radius: var(--radius-sm);
+  background: var(--light-grey-100);
+  color: var(--text-muted);
+  font-family: 'Barlow', sans-serif; font-size: 12.5px;
+  cursor: pointer; width: 100%;
+  transition: border-color var(--fast), background var(--fast), color var(--fast);
+  user-select: none;
+}
+.file-upload-btn:hover {
+  border-color: var(--brand-red);
+  background: var(--brand-red-bg);
+  color: var(--brand-red);
+}
+.file-upload-btn span {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
+}
+
+.file-preview-wrap { margin-top: 6px; }
+.file-preview-img {
+  width: 100%; max-height: 120px; object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* ── Current photo (edit modal) ───────────────────────────────── */
+.current-photo-wrap {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px; padding: 8px 10px;
+  background: var(--light-grey-100);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.current-photo-thumb {
+  width: 56px; height: 40px; object-fit: cover;
+  border-radius: 4px; flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.current-photo-remove {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11.5px; color: var(--brand-red);
+  cursor: pointer; font-family: 'Barlow', sans-serif;
+  font-weight: 600; letter-spacing: 0.2px;
+  user-select: none;
+}
+.current-photo-remove input[type="checkbox"] {
+  accent-color: var(--brand-red); cursor: pointer;
+}
+
+/* ── Crew notice ──────────────────────────────────────────────── */
+.crew-notice {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 13px;
+  background: var(--brand-yellow-bg);
+  border: 1px solid var(--brand-yellow-light);
+  border-radius: var(--radius-sm);
+  font-size: 12px; color: #795500; margin: 0;
+}
+
+/* ── Page header button alignment ────────────────────────────── */
+.page-header { align-items: center; }
+.page-header-actions { align-items: center; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CREW PICKER  —  custom searchable dropdown with driver photos
+   ════════════════════════════════════════════════════════════ */
+.crew-picker {
+  position: relative;
+  width: 100%;
+  font-family: 'Barlow', sans-serif;
+}
+
+/* ── Trigger button ───────────────────────────────────────────── */
+.cp-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  cursor: pointer;
+  user-select: none;
+  min-height: 38px;
+  transition: border-color var(--fast), box-shadow var(--fast);
+  outline: none;
+}
+
+.cp-trigger:hover,
+.cp-trigger:focus {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px rgba(211,47,47,0.08);
+}
+
+.crew-picker.cp-open .cp-trigger {
+  border-color: var(--brand-red);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 0 0 3px rgba(211,47,47,0.08);
+}
+
+.cp-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cp-value-avatar {
+  flex-shrink: 0;
+  display: none;
+  line-height: 0;
+}
+
+.cp-value-avatar .cp-avatar-img,
+.cp-value-avatar .cp-avatar-initials {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cp-value-avatar .cp-avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-red);
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+
+.cp-value-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-trigger.cp-has-value .cp-value-text {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.cp-chevron {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  stroke: var(--text-light);
+  transition: transform 0.18s ease;
+}
+
+.crew-picker.cp-open .cp-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown panel ───────────────────────────────────────────── */
+.cp-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: var(--white);
+  border: 1px solid var(--brand-red);
+  border-top: none;
+  border-bottom-left-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  display: none;
+  flex-direction: column;
+  max-height: 240px;
+  overflow: hidden;
+}
+
+.crew-picker.cp-open .cp-dropdown {
+  display: flex;
+}
+
+/* ── Search bar inside dropdown ───────────────────────────────── */
+.cp-search-wrap {
+  position: relative;
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+.cp-search-wrap svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+  height: 13px;
+  stroke: var(--text-light);
+  pointer-events: none;
+}
+
+.cp-search {
+  width: 100%;
+  padding: 9px 10px 9px 30px;
+  border: none;
+  outline: none;
+  font-family: 'Barlow', sans-serif;
+  font-size: 12.5px;
+  color: var(--text);
+  background: var(--light-grey-100);
+}
+
+.cp-search::placeholder { color: var(--text-light); }
+
+/* ── Options list ─────────────────────────────────────────────── */
+.cp-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.cp-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background var(--fast);
+  position: relative;
+}
+
+.cp-option:hover:not(.cp-disabled) {
+  background: var(--brand-red-bg);
+}
+
+.cp-option.cp-selected {
+  background: var(--light-grey-100);
+}
+
+.cp-option.cp-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: transparent;
+}
+
+/* Clear/unassign option */
+.cp-option-clear {
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.cp-opt-avatar-empty {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--light-grey-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-light);
+}
+
+/* Photo / initials avatar in list */
+.cp-option .cp-avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--light-grey-300);
+}
+
+.cp-option .cp-avatar-initials {
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-red);
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.03em;
+}
+
+.cp-opt-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cp-opt-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-opt-tag {
+  font-size: 10.5px;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.cp-opt-check {
+  width: 14px;
+  height: 14px;
+  stroke: var(--brand-red);
+  flex-shrink: 0;
+}
+
+.cp-no-results {
+  padding: 14px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+}
+
+/* ── Option row height — taller to fit larger avatar ──────────── */
+.cp-option {
+  padding: 9px 12px;
+  min-height: 58px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CREW PICKER — HOVER PHOTO PREVIEW CARD
+   Appears to the right of the dropdown on option hover.
+   Positioned fixed so it escapes the modal overflow clipping.
+   ════════════════════════════════════════════════════════════ */
+.cp-photo-preview {
+  position: fixed;
+  z-index: 9500;
+  width: 180px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.20), 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid var(--light-grey-300);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.92) translateX(-6px);
+  transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.cp-photo-preview.cp-photo-preview-visible {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+}
+
+.cp-photo-preview-img-wrap {
+  width: 100%;
+  height: 160px;
+  background: var(--light-grey-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cp-photo-preview-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cp-photo-preview-initials {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--brand-red);
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34px;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-photo-preview-name {
+  padding: 10px 14px 12px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--text);
+  text-align: center;
+  border-top: 1px solid var(--border-soft);
+  line-height: 1.3;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .trucks-toolbar { gap: 8px; }
+  .search-box input { width: 100%; }
+  .card-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .row-actions { flex-wrap: wrap; }
+  .stats-grid .stat-value { font-size: 28px; }
+  .truck-peek { width: 180px; }
+  .truck-peek-img-wrap { height: 110px; }
+}
