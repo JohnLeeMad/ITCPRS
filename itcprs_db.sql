@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Mar 23, 2026 at 05:22 AM
+-- Generation Time: Apr 07, 2026 at 09:18 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -113,13 +113,6 @@ CREATE TABLE `trucks` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Fleet trucks — ITCPRS';
 
---
--- Dumping data for table `trucks`
---
-
-INSERT INTO `trucks` (`id`, `plate_number`, `make`, `model`, `year`, `color`, `chassis_number`, `engine_number`, `capacity_tons`, `status`, `notes`, `photo_plate`, `photo_truck`, `created_at`, `updated_at`) VALUES
-(1, 'DBA 4658', 'Isuzu', 'Elf NHR', NULL, 'White', '', '', 5.00, 'active', '', 'plate_1773993326_d48ad148.jpg', 'truck_1773993403_8442f6a3.jpg', '2026-03-19 20:49:02', '2026-03-20 15:56:43');
-
 -- --------------------------------------------------------
 
 --
@@ -133,14 +126,6 @@ CREATE TABLE `truck_drivers` (
   `position` enum('driver','helper') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `assigned_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Driver + helper crew assignments per truck';
-
---
--- Dumping data for table `truck_drivers`
---
-
-INSERT INTO `truck_drivers` (`id`, `truck_id`, `user_id`, `position`, `assigned_at`) VALUES
-(15, 1, 2, 'driver', '2026-03-20 15:56:43'),
-(16, 1, 3, 'helper', '2026-03-20 15:56:43');
 
 -- --------------------------------------------------------
 
@@ -170,9 +155,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `contact_number`, `photo`, `password_hash`, `role`, `status`, `reset_token`, `reset_expires`, `created_at`, `updated_at`, `last_login`) VALUES
-(1, 'System Administrator', 'admin', 'admin@itcprs.local', '09000000000', NULL, '$2y$10$rrKjSJ7LCHsZ2sKCiT1mHOuRUiZ/W2F/1N6Ru0NZ6YPC6G6sF141W', 'admin', 'active', NULL, NULL, '2026-03-11 13:57:58', '2026-03-23 13:05:51', '2026-03-23 13:05:17'),
-(2, 'John Leee', 'jonleemad', 'jonleemad17@gmail.com', '09000000000', NULL, '$2y$10$rrKjSJ7LCHsZ2sKCiT1mHOuRUiZ/W2F/1N6Ru0NZ6YPC6G6sF141W', 'driver', 'active', NULL, NULL, '2026-03-12 10:36:43', '2026-03-23 13:05:42', '2026-03-14 21:18:03'),
-(3, 'Hannah Jane', 'yochanan', '', '', NULL, '', 'driver', 'active', NULL, NULL, '2026-03-19 20:42:55', '2026-03-21 12:24:34', NULL);
+(1, 'System Administrator', 'admin', 'admin@itcprs.local', '09000000000', NULL, '$2y$10$rrKjSJ7LCHsZ2sKCiT1mHOuRUiZ/W2F/1N6Ru0NZ6YPC6G6sF141W', 'admin', 'active', NULL, NULL, '2026-03-11 13:57:58', '2026-04-07 16:52:55', '2026-04-07 16:52:55'),
+(2, 'John Leee', 'jonleemagsaysay', 'juan7@gmail.com', '09000000000', NULL, '$2y$10$rrKjSJ7LCHsZ2sKCiT1mHOuRUiZ/W2F/1N6Ru0NZ6YPC6G6sF141W', 'driver', 'active', NULL, NULL, '2026-03-12 10:36:43', '2026-04-07 16:52:21', '2026-04-07 16:52:21'),
+(3, 'Juana Dela cruz', 'juana', '', '', NULL, '', 'driver', 'active', NULL, NULL, '2026-03-19 20:42:55', '2026-04-06 19:02:29', NULL),
+(5, 'Maria Santos', 'mariasantos', 'mariasantos@gmail.com', '', NULL, '$2y$12$gDcwATuo7Z/eNCq4hITYWOBLrDsYly0Pnz1AitaH9qx79BG3w6QJK', 'staff', 'active', NULL, NULL, '2026-04-07 17:14:02', '2026-04-07 17:14:23', '2026-04-07 17:14:23');
 
 --
 -- Indexes for dumped tables
@@ -275,7 +261,7 @@ ALTER TABLE `truck_drivers`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
