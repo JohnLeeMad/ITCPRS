@@ -465,10 +465,10 @@ require_once __DIR__ . '/../../includes/admin_nav.php';
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="a_email">Email Address</label>
+            <label class="form-label" for="a_email">Email Address <span class="req">*</span></label>
             <input class="form-control" id="a_email" name="email" type="email"
-                   placeholder="Optional" maxlength="180"
-                   value="<?php echo $modal_reopen==='add' ? e($form_data['email']??'') : ''; ?>" />
+                  placeholder="e.g. user@example.com" maxlength="180" required
+                  value="<?php echo $modal_reopen==='add' ? e($form_data['email']??'') : ''; ?>" />
           </div>
 
           <div class="form-group">
@@ -594,10 +594,10 @@ require_once __DIR__ . '/../../includes/admin_nav.php';
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="edit_email">Email Address</label>
+            <label class="form-label" for="edit_email">Email Address <span class="req">*</span></label>
             <input class="form-control" id="edit_email" name="email" type="email"
-                   placeholder="Optional" maxlength="180"
-                   value="<?php echo $modal_reopen==='edit' ? e($form_data['email']??'') : ''; ?>" />
+                  placeholder="e.g. user@example.com" maxlength="180" required
+                  value="<?php echo $modal_reopen==='edit' ? e($form_data['email']??'') : ''; ?>" />
           </div>
 
           <div class="form-group">

@@ -21,7 +21,7 @@
     <a href="#how"      class="nav-text-link">How It Works</a>
     <a href="#roles"    class="nav-text-link">Roles</a>
     <a href="modules/auth/login.php"    class="btn-nav-login">Log In</a>
-    <a href="modules/auth/register.php" class="btn-nav-register">Register</a>
+    <!-- <a href="modules/auth/register.php" class="btn-nav-register">Register</a> -->
   </div>
   <button class="hamburger" id="hamburger" aria-label="Open menu">
     <span></span><span></span><span></span>

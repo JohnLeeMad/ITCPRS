@@ -40,7 +40,7 @@ function sanitize_user(array $p): array {
   return [
     'full_name'      => trim($p['full_name']      ?? ''),
     'username'       => trim($p['username']       ?? ''),
-    'email'          => strtolower(trim($p['email'] ?? '')),
+    'email'          => trim($p['email'] ?? ''),
     'contact_number' => trim($p['contact_number'] ?? ''),
     'role'           => in_array($p['role'] ?? '', ALLOWED_ROLES, true)
                           ? $p['role'] : 'staff',
@@ -73,10 +73,13 @@ function validate_user(array $d, int $exclude_id = 0): array {
     mysqli_stmt_close($stmt);
   }
 
-  if ($d['email'] !== '' && !filter_var($d['email'], FILTER_VALIDATE_EMAIL))
+  // EMAIL IS NOW REQUIRED
+  if ($d['email'] === '') {
+    $errors[] = 'Email address is required.';
+  } elseif (!filter_var($d['email'], FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'Enter a valid email address.';
-
-  if ($d['email'] !== '') {
+  } else {
+    // Check for duplicate email
     $stmt = mysqli_prepare($conn,
       'SELECT id FROM users WHERE email = ? AND id <> ? LIMIT 1'
     );
@@ -172,7 +175,6 @@ if ($action === 'create') {
        (full_name, username, email, contact_number, photo, password_hash, role, status)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
   );
-  // s s s s s s s s = 8 params
   mysqli_stmt_bind_param($stmt, 'ssssssss',
     $d['full_name'], $d['username'], $d['email'],
     $d['contact_number'], $photo, $hash, $d['role'], $d['status']
@@ -242,7 +244,6 @@ if ($action === 'update') {
          updated_at = NOW()
        WHERE id = ?'
     );
-    // s s s s s s s s i = 9 params
     mysqli_stmt_bind_param($stmt, 'ssssssssi',
       $d['full_name'], $d['username'], $d['email'],
       $d['contact_number'], $photo, $d['role'], $d['status'],
@@ -256,7 +257,6 @@ if ($action === 'update') {
          updated_at = NOW()
        WHERE id = ?'
     );
-    // s s s s s s s i = 8 params
     mysqli_stmt_bind_param($stmt, 'sssssssi',
       $d['full_name'], $d['username'], $d['email'],
       $d['contact_number'], $photo, $d['role'], $d['status'], $id
@@ -323,3 +323,4 @@ if ($action === 'delete') {
 }
 
 redirect_error('Unknown action.');
+?>

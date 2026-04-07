@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Log In – ITCPRS</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/assets/css/auth.css"/>
+  <link rel="stylesheet" href="../../assets/css/auth.css"/>
 </head>
 <body>
 
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
 
       <hr class="divider"/>
-      <p class="register-prompt">Don't have an account? <a href="register.php">Create one here</a></p>
+      <!-- <p class="register-prompt">Don't have an account? <a href="register.php">Create one here</a></p> -->
 
     </div>
   </div>

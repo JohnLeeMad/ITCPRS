@@ -169,10 +169,16 @@ $last_login = $user['last_login']
     ? date('M j, Y \a\t g:i A', strtotime($user['last_login']))
     : 'Never';
 
-// ── Nav setup ─────────────────────────────────────────────────
+// ── Nav setup — load the correct sidebar based on the user's role ──
 $page_title  = 'My Profile';
 $active_menu = 'profile';
-require_once __DIR__ . '/../../includes/admin_nav.php';
+
+$_nav_file = match($nav_role ?? $_SESSION['user']['role']) {
+    'driver'    => 'driver_nav.php',
+    'staff'     => 'staff_nav.php',
+    default     => 'admin_nav.php',   // admin, secretary
+};
+require_once __DIR__ . '/../../includes/' . $_nav_file;
 ?>
 
 <link rel="stylesheet" href="/assets/css/profile.css"/>
